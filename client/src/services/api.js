@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const URL = ''
+const URL = 'https://storiesandfacts.herokuapp.com'
 
 export const createPost = async (post) => {
     try {
@@ -83,10 +83,18 @@ export const newUser = async (post) => {
 }
 
 export const getUser = async (post) => {
-    console.log(post)
     try {
         return await axios.post(`${URL}/user/signin`, post)
     } catch(error) {
         console.log('Error while logging in ', error)
+    }
+}
+
+export const postMessage = async (post) => {
+    try {
+        console.log(post)
+        return await axios.post(`${URL}/message`, post)
+    } catch(error) {
+        console.log('Error while sending the message, ', error)
     }
 }

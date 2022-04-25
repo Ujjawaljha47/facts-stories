@@ -4,6 +4,7 @@ import { createPost, viewDetailPost, viewAllPosts, updatePost, deletePost } from
 import { uplaodImage, getImage } from '../controller/imageController.js'
 import { createComment, getComments, deleteComment } from '../controller/commentController.js'
 import { addUser, getUser } from '../controller/userController.js'
+import { createMessage } from '../controller/messageController.js'
 import upload from '../utils/upload.js'
 
 const Router = express.Router()
@@ -23,5 +24,7 @@ Router.post('/comments/delete/:id', deleteComment)
 
 Router.post('/user/signup', addUser)
 Router.post('/user/signin', getUser)
+
+Router.post('/message', createMessage)
 
 export default Router  

@@ -1,4 +1,4 @@
-import {Box, makeStyles, Typography} from '@material-ui/core'
+import {Box, makeStyles, Typography, CircularProgress} from '@material-ui/core'
 import {Edit, Delete} from '@material-ui/icons'
 import {Link, useParams, useHistory} from 'react-router-dom'
 import { useState, useEffect } from 'react'
@@ -47,6 +47,13 @@ const useStyle = makeStyles(theme=>({
     link: {
         textDecoration: 'none',
         color: 'inherit'
+    },
+    progressBx: {
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 }))
 
@@ -57,11 +64,13 @@ const DetailView = ({userInfo}) => {
     const url = "https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
     
     const [post, setPost] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const fetchData = async () => {
             let data = await getPostDetail(id)
             setPost(data)
+            setIsLoading(false)
         }
         fetchData()
     }, [] )
@@ -72,7 +81,7 @@ const DetailView = ({userInfo}) => {
         history.push('/')
     }
     
-    
+    if(isLoading) return <Box className={classes.progressBx} ><CircularProgress /></Box>
     return userInfo.name === post.username
     ? (
         <Box className={classes.container}>

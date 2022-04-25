@@ -9,6 +9,8 @@ import CreateView from './posts/CreateView';
 import UpdateView from './posts/UpdateView';
 import Header from './components/Header'
 import Login from './components/account/Login'
+import Contact from './components/Contact';
+import About from './components/About'
 
 import './App.css';
 
@@ -26,6 +28,8 @@ const App = () => {
             <Route exact path='/detail/:id'><DetailView userInfo={userInfo} /></Route>
             <Route exact path='/create'><CreateView userInfo={userInfo} /></Route>
             <Route exact path='/update/:id' component={UpdateView} />
+            <Route exact path='/contact' component={Contact} />
+            <Route exact path='/about' component={About} />
         </Switch>
     </Box>
     </BrowserRouter>

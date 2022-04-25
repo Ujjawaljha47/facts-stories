@@ -1,4 +1,4 @@
-import { Box, makeStyles, FormControl, InputBase, Button, TextareaAutosize } from '@material-ui/core'
+import { Box, makeStyles, FormControl, InputBase, Button, TextareaAutosize, CircularProgress} from '@material-ui/core'
 import { AddCircle } from '@material-ui/icons'
 import { useParams, useHistory } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -33,6 +33,13 @@ const useStyle = makeStyles(theme => ({
             outline: 'none'
         },
         fontSize: 16
+    },
+    progressBx: {
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 }))
 
@@ -88,6 +95,7 @@ const UpdateView = () => {
 
     }
     const url = post.picture || "https://images.unsplash.com/photo-1543128639-4cb7e6eeef1b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGFwdG9wJTIwc2V0dXB8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+    if(!post.title) return <Box className={classes.progressBx}><CircularProgress /></Box>
     return (
         <Box className={classes.container}>
             <img className={classes.image} src={url} alt="" />

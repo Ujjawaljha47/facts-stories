@@ -1,4 +1,4 @@
-import { Box, makeStyles, FormControl, InputBase, Button, TextareaAutosize, InputLabel, MenuItem, Select } from '@material-ui/core'
+import { Box, makeStyles, FormControl, InputBase, Button, TextareaAutosize, InputLabel, MenuItem, Select, CircularProgress } from '@material-ui/core'
 import { AddCircle } from '@material-ui/icons'
 import { useState, useEffect } from 'react'
 import { createPost, uploadFile } from '../services/api'
@@ -38,6 +38,13 @@ const useStyle = makeStyles(theme=> ({
     category: {
         minWidth: 90,
         marginRight: 15
+    },
+    progressBx: {
+        width: '100%',
+        height: '50vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 }))
 const initialValue = {
@@ -54,6 +61,7 @@ const CreateView = ({userInfo}) => {
     const [post, setPost] = useState(initialValue)
     const [file, setFile] = useState('')
     const [image, setImage] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
     const [open, setOpen] = useState(false);
     const history = useHistory()
 
@@ -70,6 +78,7 @@ const CreateView = ({userInfo}) => {
                 const image = await uploadFile(data)
                 post.picture = image.data
                 setImage(image.data)
+                setIsLoading(false)
             }
         }
         getImage()
@@ -89,7 +98,10 @@ const CreateView = ({userInfo}) => {
         await createPost(post)
         history.push('/')
     }
-    
+    const handleFileChange = (e) => {
+        setIsLoading(true)
+        setFile(e.target.files[0])
+    }
     
       const handleClose = () => {
         setOpen(false);
@@ -100,13 +112,13 @@ const CreateView = ({userInfo}) => {
       };
     return (
         <Box className={classes.container}>
-            <img className={classes.image} src={url} alt="thumbnail"></img>
-
+            {isLoading && <Box className={classes.progressBx}><p>Uploading image...  </p><CircularProgress /></Box>}
+            {!isLoading && <img className={classes.image} src={url} alt="thumbnail"></img>}
             <FormControl className={classes.form}>
                 <label htmlFor='fileInput'>
                     <AddCircle color='action' style={{cursor: 'pointer'}} />
                 </label>
-                <input type="file" id="fileInput" accept="image/*" style={{display: 'none'}} onChange={(e) => setFile(e.target.files[0]) } />
+                <input type="file" id="fileInput" accept="image/*" style={{display: 'none'}} onChange={(e) => handleFileChange(e) } />
                 <InputBase 
                     onChange={(e) => handleChange(e)} 
                     className={classes.textField} 

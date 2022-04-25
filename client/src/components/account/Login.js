@@ -1,4 +1,4 @@
-import { TextField, makeStyles, Box, Typography, Button } from '@material-ui/core'
+import { TextField, makeStyles, Box, Typography, Button, CircularProgress } from '@material-ui/core'
 import { useState } from 'react'
 import { newUser, getUser } from '../../services/api'
 
@@ -34,7 +34,8 @@ const useStyle = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '30px 0'
+        padding: '30px 0',
+        marginTop: 15
     },
     input: {
         width: 340,
@@ -91,10 +92,11 @@ var initialView = {
 }
 const Login = ({setUserInfo}) => {
     const classes = useStyle()
-    const url = 'https://i.imgur.com/UPOJ1b9.png'
+    const url = 'https://i.imgur.com/X93ailI.png'
     const [account, setAccount] = useState(initialView.login)
     const [userSignUp, setUserSignUp] = useState(loginInitials)
     const [userSignIn, setUserSignIn] = useState(signinInitials)
+    const [isLoading, setIsLoading] = useState(false)
 
     const toggleAccountOfLogin = () => {
         setAccount(initialView.signup)
@@ -110,6 +112,7 @@ const Login = ({setUserInfo}) => {
         setUserSignIn({...userSignIn, [e.target.name]: e.target.value})
     }
     const siginInHandle = async () => {
+        setIsLoading(true)
         const { email, password } = userSignIn
         if( !email || !password ) alert('Please fill all the fields')
         else {
@@ -117,24 +120,31 @@ const Login = ({setUserInfo}) => {
             if(typeof response.data === 'string') alert(response.data)
             else setUserInfo(response.data)
         }
+        setIsLoading(false)
     }
     const signUpHandle = async () => {
+        setIsLoading(true)
         const { name, email, password, cnfPassword } = userSignUp
         if( !name || !email || !password || !cnfPassword ) alert('Please fill all the fields') 
         else if(password !== cnfPassword) alert("Password did not match")
         else {
             let response = await newUser({name, email, password})
             if(response) alert(response.data)
-            toggleAccountOfLogin()
+            toggleAccountOfSignup()
         }
+        setIsLoading(false)
         
     }
+
 
     return account.view === 'login' 
     ? (
         <Box className={classes.component}>
             <Box className={classes.container}>
                 <img src={url} className={classes.image} />
+                {
+                    isLoading && <CircularProgress />
+                }
                 <form className={classes.inputBx}>
                     <Typography className={classes.signin}>Sign In</Typography>
                     <TextField label="Email" name="email" required={true} variant='outlined' className={classes.input} onChange={(e) => handleSignin(e)} />
@@ -155,6 +165,9 @@ const Login = ({setUserInfo}) => {
         <Box className={classes.component}>
             <Box className={classes.container}>
                 <img src={url} className={classes.image} />
+                {
+                    isLoading && <CircularProgress />
+                }
                 <form className={classes.inputBx}>
                     <Typography className={classes.signin}>Sign Up</Typography>
                     <TextField label="Name" name="name" required={true} variant='outlined' className={classes.input} onChange={(e) => handleSignup(e)} />
