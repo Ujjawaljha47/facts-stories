@@ -1,6 +1,6 @@
 import { TextField, makeStyles, Box, Typography, Button, CircularProgress } from '@material-ui/core'
 import { useState } from 'react'
-import { newUser, getUser } from '../../services/api'
+import { newUser, getUser, resetPassword } from '../../services/api'
 
 //components
 import Eye from './Eye'
@@ -81,6 +81,9 @@ const signinInitials = {
     email: "",
     password: ""
 }
+const retrieveInitials = {
+    recoverEmail: ""
+}
 
 var initialView = {
     login: {
@@ -88,6 +91,9 @@ var initialView = {
     },
     signup: {
         view: 'signup'
+    },
+    forget: {
+        view: 'forget'
     }
 }
 const Login = ({setUserInfo}) => {
@@ -97,6 +103,7 @@ const Login = ({setUserInfo}) => {
     const [userSignUp, setUserSignUp] = useState(loginInitials)
     const [userSignIn, setUserSignIn] = useState(signinInitials)
     const [isLoading, setIsLoading] = useState(false)
+    const [userRetrieve, setUserRetrieve] = useState(retrieveInitials)
 
     const toggleAccountOfLogin = () => {
         setAccount(initialView.signup)
@@ -135,13 +142,28 @@ const Login = ({setUserInfo}) => {
         setIsLoading(false)
         
     }
+    const forgetPassword = () => {
+        setAccount(initialView.forget)
+    }
+    const handleRetrive = (e) => {
+        setUserRetrieve({...userRetrieve, [e.target.name]: e.target.value})
+        console.log(userRetrieve)
+    }
+    const sendPassword = async () => {
+        setIsLoading(true)
+        let response = await resetPassword(userRetrieve)
+        setIsLoading(false)
+        alert(response.data)
+        if(response.data === 'Please enter the currect email') return
+        else toggleAccountOfSignup()
+    }
 
 
     return account.view === 'login' 
     ? (
         <Box className={classes.component}>
             <Box className={classes.container}>
-                <img src={url} className={classes.image} />
+                <img src={url} alt="logo" className={classes.image} />
                 {
                     isLoading && <CircularProgress />
                 }
@@ -156,15 +178,16 @@ const Login = ({setUserInfo}) => {
                     </Box>
                     <Button variant="contained" className={classes.btn} color='primary' onClick={() => siginInHandle()}>Sign In</Button>
                 </form>
-                <Typography className={classes.smallText}>Forgot Password?</Typography>
+                <Typography className={classes.smallText} onClick={() => forgetPassword()} >Forgot Password?</Typography>
                 <Typography className={classes.smallText} onClick={() => toggleAccountOfLogin()}>New to Facts and Stories ? Sign Up.</Typography>
             </Box>
         </Box>
     )
-    : (
+    : account.view === 'signup' 
+    ?   (
         <Box className={classes.component}>
             <Box className={classes.container}>
-                <img src={url} className={classes.image} />
+                <img src={url} alt="logo" className={classes.image} />
                 {
                     isLoading && <CircularProgress />
                 }
@@ -187,6 +210,23 @@ const Login = ({setUserInfo}) => {
                     <Button variant="contained" className={classes.btn} color='primary' onClick={() => signUpHandle()}>Sign Up</Button>
                 </form>
                 <Typography className={classes.smallText} onClick={() => toggleAccountOfSignup()}>Already an User ? Sign In.</Typography>
+            </Box>
+        </Box>
+    )
+    : (
+        <Box className={classes.component}>
+            <Box className={classes.container}>
+                <img src={url} alt="logo" className={classes.image} />
+                {
+                    isLoading && <CircularProgress />
+                }
+                <form className={classes.inputBx}>
+                    <Typography className={classes.signin}>Retrieve Password</Typography>
+                    <TextField label="Email" name="recoverEmail" required={true} variant='outlined' className={classes.input} onChange={(e) => handleRetrive(e)} />
+                    
+                    <Button variant="contained" className={classes.btn} color='primary' onClick={() => sendPassword()}>Reset Password</Button>
+                </form>
+                <Typography className={classes.smallText} onClick={() => toggleAccountOfSignup()} >Back to Sign in</Typography>
             </Box>
         </Box>
     )

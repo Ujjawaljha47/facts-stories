@@ -92,9 +92,16 @@ export const getUser = async (post) => {
 
 export const postMessage = async (post) => {
     try {
-        console.log(post)
         return await axios.post(`${URL}/message`, post)
     } catch(error) {
         console.log('Error while sending the message, ', error)
+    }
+}
+
+export const resetPassword = async (post) => {
+    try {
+        return await axios.post(`${URL}/resetPassword`, post)
+    } catch(error) {
+        console.log('Error while retrieving the password')
     }
 }

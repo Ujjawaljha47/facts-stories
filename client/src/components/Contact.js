@@ -83,8 +83,8 @@ const Contact = () => {
         await postMessage(data)
         setLoading(false)
         setOpen(true)
-
     }
+
     return (
         <Box className={classes.component}>
             <Typography className={classes.text}>Contact the customer support below for more information</Typography>
